@@ -159,7 +159,7 @@ class Magento2ValetDriver extends ValetDriver
         }
 
         $sitePath = $this->mapSitePath($sitePath);
-        
+
         if(strpos($uri, '/errors') === 0) {
             $file = $sitePath . '/pub' . $uri;
             if (file_exists($file)) {

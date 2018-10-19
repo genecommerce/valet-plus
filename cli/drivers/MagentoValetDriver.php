@@ -2,6 +2,20 @@
 
 class MagentoValetDriver extends BasicValetDriver
 {
+
+    /**
+     * Checks sitempath to check if codebase is in ./ or ./public/
+     * @param  string $sitePath
+     * @return string
+     */
+    private function mapSitePath($sitePath)
+    {
+        if(is_dir($sitePath.'/public/app/code/core/Mage')) {
+            return $sitePath . "/public";
+        }
+        return $sitePath;
+    }
+
     /**
      * Determine if the driver serves the request.
      *
@@ -12,6 +26,7 @@ class MagentoValetDriver extends BasicValetDriver
      */
     public function serves($sitePath, $siteName, $uri)
     {
+        $sitePath = $this->mapSitePath($sitePath);
         return is_dir($sitePath.'/app/code/core/Mage');
     }
 
@@ -19,6 +34,7 @@ class MagentoValetDriver extends BasicValetDriver
         info('Configuring Magento...');
 
         $sitePath = getcwd();
+        $sitePath = $this->mapSitePath($sitePath);
 
         if(!file_exists($sitePath.'/app/etc/local.xml')) {
             info('local.xml missing. Installing default local.xml...');
