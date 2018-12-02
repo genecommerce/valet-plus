@@ -260,6 +260,13 @@ When no name is given it'll try to find the closest git repository directory nam
 valet db open
 ```
 
+## Logging
+
+To easily read the log file of php, php-fpm, nginx, mysql, mailhog or redis you can use command below.
+```
+valet logs <logname>
+```
+
 ## Subdomains
 
 You can manage subdomains for the current working directory using:
@@ -441,25 +448,24 @@ APCu is temporarily turned off due to a compatibility issue with PHP-FPM, see ht
 
 By default these are included:
 
-- Static HTML
-- Magento
-- Magento 2
-- Symfony
-- Wordpress / Bedrock
-- Laravel
-- Lumen
 - CakePHP 3
 - Craft
-- Jigsaw
-- Slim
-- Statamic
-- Zend Framework
 - Drupal
-- Typo3
+- Jigsaw
+- Laravel
+- Lumen
+- Magento
+- Magento 2
 - Neos
-- Craft
 - Pimcore 5
 - Shopware 5
+- Slim
+- Statamic
+- Static HTML
+- Symfony
+- Typo3
+- Wordpress / Bedrock
+- Zend Framework
 
 A full list can be found [here](cli/drivers).
 

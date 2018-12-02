@@ -22,7 +22,7 @@ use Symfony\Component\Console\Question\Question;
 Container::setInstance(new Container);
 
 // get current version based on git describe and tags
-$version = new Version('1.0.21' , __DIR__ . '/../');
+$version = new Version('1.0.23' , __DIR__ . '/../');
 
 $app = new Application('Valet+', $version->getVersion());
 
@@ -66,6 +66,10 @@ $app->command('install [--with-mariadb]', function ($withMariadb) {
  * Fix common problems within the Valet+ installation.
  */
 $app->command('fix [--reinstall]', function ($reinstall) {
+    if (file_exists($_SERVER['HOME'] . '/.my.cnf')) {
+        warning('You have an .my.cnf file in your home directory. This can affect the mysql installation negatively.');
+    }
+
     PhpFpm::fix($reinstall);
     Pecl::fix();
 })->descriptions('Fixes common installation problems that prevent Valet+ from working');
@@ -837,6 +841,30 @@ if (is_dir(VALET_HOME_PATH)) {
 
         info("The [$url] will no longer proxy traffic and will use the Valet driver instead.");
     })->descriptions('Disable proxying for a site re-instating handling with a Valet driver.');
+
+    $app->command('logs [service]', function ($service) {
+        $logs = [
+            'php' => '$HOME/.valet/Log/php.log',
+            'php-fpm' => '/usr/local/var/log/php-fpm.log',
+            'nginx' => '$HOME/.valet/Log/nginx-error.log',
+            'mysql' => '$HOME/.valet/Log/mysql.log',
+            'mailhog' => '/usr/local/var/log/mailhog.log',
+            'redis' => '/usr/local/var/log/redis.log',
+        ];
+
+        if (!isset($logs[$service])) {
+            warning('No logs found for [' . $service . ']. Available logs: '.implode(', ', array_keys($logs)));
+            return;
+        }
+
+        $path = $logs[$service];
+        if (!Logs::exists($path)) {
+            warning('The path `' . $path . '` does not (yet) exists');
+            return;
+        }
+
+        Logs::open($path);
+    })->descriptions('Open the logs for the specified service. (php, php-fpm, nginx, mysql, mailhog, redis)');
 }
 
 /**
